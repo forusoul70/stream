@@ -49,18 +49,34 @@ var _sendM3u8 = function(filePath, res) {
 * send ts
 **/
 var _sendTsStream = function(filePath, res) {
-  _getFileSize(filePath)/*.catch(function(e) {
-    console.log('3');
+  _getFileSize(filePath).catch(function(e) {
+    console.log('Failed to get file size');
     res.status(400).send('Failed to get file size [' + filepath + ']');
-  })*/.then(function(size) {
+  }).then(function(size) {
     res.header('Content-Type', 'video/mp2t');
     res.header('Accept-Ranges', 'bytes');
     res.header('Content-Length', size);
     res.header('Connection', 'keep-alive');
-    var stream = fs.createReadStream(filePath, {bufferSize: 64* 1024});
+
+    var stream = fs.createReadStream(filePath);
+    console.log('try to create read stream');
+    // for debug
+    stream.on('data', function(data) {
+	     console.log('loaded part of the file');
+     });
+
+    stream.on('end', function () {
+    	console.log('all parts is loaded');
+    });
+
+    stream.on('error', function(err) {
+    	console.log('something is wrong : [' + err + ']');
+    });
+
+    // pipe to response
     stream.pipe(res);
-  });
-}
+    });
+  }
 
 module.exports.streamHelper = function() {
   /**
