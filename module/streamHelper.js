@@ -50,16 +50,15 @@ var _sendM3u8 = function(filePath, res) {
 **/
 var _sendTsStream = function(filePath, res) {
   _getFileSize(filePath).catch(function(e) {
-    console.log('Failed to get file size');
     res.status(400).send('Failed to get file size [' + filepath + ']');
   }).then(function(size) {
     res.header('Content-Type', 'video/mp2t');
     res.header('Accept-Ranges', 'bytes');
     res.header('Content-Length', size);
     res.header('Connection', 'keep-alive');
+    res.status(200);
 
     var stream = fs.createReadStream(filePath);
-    console.log('try to create read stream');
     // for debug
     stream.on('data', function(data) {
 	     console.log('loaded part of the file');
