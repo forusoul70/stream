@@ -1,6 +1,6 @@
 var path = require('path');
 var fs = require('fs');
-var RESOURCE_PATH = 'resource/demo/';
+var RESOURCE_PATH = 'resource/movie/';
 
 /**
 * 파일이 존재하는 검사
@@ -45,6 +45,17 @@ var _sendM3u8 = function(filePath, res) {
   });
 }
 
+/*
+* file 이름으로 저장된 폴더 찾기
+* 1. 확장자를 띄고
+* 2. 숫자를 모두 띈다
+*/
+var _findFolder = function(fileName) {
+  var folder = fileName.substring(0, fileName.indexOf('.'));
+  var folder = folder.replace(/[0-9]+/g, '');
+  return folder;
+}
+
 /**
 * send ts
 **/
@@ -61,11 +72,11 @@ var _sendTsStream = function(filePath, res) {
     var stream = fs.createReadStream(filePath);
     // for debug
     stream.on('data', function(data) {
-	     console.log('loaded part of the file');
+	     console.log(filePath + '[' + data.length + ']');
      });
 
     stream.on('end', function () {
-    	console.log('all parts is loaded');
+    	console.log('finished [' + filePath + ']');
     });
 
     stream.on('error', function(err) {
@@ -82,11 +93,16 @@ module.exports.streamHelper = function() {
   * Response for stremaing request
   **/
   this.responseMovie = function(req, res) {
-    var filePath = path.join(global.appRoot, RESOURCE_PATH + req.params.file);
+    // file format 검사
+    var movie = req.params.file;
+    var folder = _findFolder(movie);
+    var filePath = path.join(global.appRoot, RESOURCE_PATH + folder + '/' + movie);
+
+    // file 찾기
     _isFileExist(filePath).catch(function(e){
       res.stats(400).send(e);
     }).then(function(){
-      switch (path.extname(req.params.file)) {
+      switch (path.extname(movie)) {
         case '.m3u8':
           _sendM3u8(filePath, res);
           break;

@@ -19,7 +19,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views/grid.html'));
 });
 
-// Demo 용
+// streaming
+app.get('/movie/:movie', (req, res) => {
+  var movie = req.params.movie;
+  console.log(encodeURI(movie + 'index.m3u8'));
+  res.redirect('/streaming/' + movie + '.m3u8');
+});
+
 app.get('/streaming/:file', (req, res) => {
   streamHelper.responseMovie(req, res);
 });
