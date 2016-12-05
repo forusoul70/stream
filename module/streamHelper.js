@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var RESOURCE_PATH = 'resource/movie/';
+var fileLogger = new (require(global.modulePath + '/fileLogger.js')).fileLogger();
 
 /**
 * 파일이 존재하는 검사

@@ -1,5 +1,6 @@
 var path = require('path');
 global.appRoot = path.resolve(__dirname);
+global.modulePath = global.appRoot + "/module"
 
 var express = require('express');
 var app = express();
@@ -13,7 +14,7 @@ app.use('/resource/', express.static(__dirname + '/resource'));
 var server = app.listen(8080, function() {
   var port = server.address().port;
   process.on('uncaughtException', function (err) {
-    fileLogger.error('uncaughtException : ' + err);    
+    fileLogger.error('uncaughtException : ' + err);
   });
   fileLogger.log('App now running on port ', port);
 });
@@ -31,5 +32,6 @@ app.get('/movie/:movie', (req, res) => {
 });
 
 app.get('/streaming/:file', (req, res) => {
+  fileLogger.log('Movie request ' + '[' + req.params.file + ']');
   streamHelper.responseMovie(req, res);
 });
