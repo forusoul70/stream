@@ -13,7 +13,6 @@ app.use('/resource/', express.static(__dirname + '/resource'));
 var server = app.listen(8080, function() {
   var port = server.address().port;
   fileLogger.log('App now running on port ', port);
-  console.log('App now running on port ', port);
 });
 
 // Routes
@@ -24,7 +23,7 @@ app.get('/', (req, res) => {
 // streaming
 app.get('/movie/:movie', (req, res) => {
   var movie = req.params.movie;
-  console.log(encodeURI(movie + 'index.m3u8'));
+  fileLogger.log('Movie request ' + '[' + movie + ']');  
   res.redirect('/streaming/' + movie + '.m3u8');
 });
 

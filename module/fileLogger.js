@@ -16,7 +16,13 @@ var _getConsole = function() {
 }
 
 module.exports.fileLogger = function() {
-  this.log = function(log, params) {    
-    _getConsole().log(log, params);
+  this.log = function(log, params) {
+    if (params === undefined) {
+      _getConsole().log(log);
+    } else {
+      _getConsole().log(log, params);
+    }
+
+    console.log(log, params);
   }
 }
