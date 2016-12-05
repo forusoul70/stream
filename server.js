@@ -4,6 +4,7 @@ global.appRoot = path.resolve(__dirname);
 var express = require('express');
 var app = express();
 var streamHelper = new (require('./module/streamHelper.js')).streamHelper();
+var fileLogger = new (require('./module/fileLogger.js')).fileLogger();
 
 // initialize
 app.set('views', './views');
@@ -11,6 +12,7 @@ app.use('/resource/', express.static(__dirname + '/resource'));
 
 var server = app.listen(8080, function() {
   var port = server.address().port;
+  fileLogger.log('App now running on port ', port);
   console.log('App now running on port ', port);
 });
 

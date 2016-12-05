@@ -1,6 +1,7 @@
 var path = require('path');
 var fs = require('fs');
 var RESOURCE_PATH = 'resource/movie/';
+var fileLogger = new (require('./module/fileLogger.js')).fileLogger();
 
 /**
 * 파일이 존재하는 검사
@@ -72,15 +73,15 @@ var _sendTsStream = function(filePath, res) {
     var stream = fs.createReadStream(filePath);
     // for debug
     stream.on('data', function(data) {
-	     console.log(filePath + '[' + data.length + ']');
+	     fileLogger.log(filePath + '[' + data.length + ']');
      });
 
     stream.on('end', function () {
-    	console.log('finished [' + filePath + ']');
+    	fileLogger.log('finished [' + filePath + ']');
     });
 
     stream.on('error', function(err) {
-    	console.log('something is wrong : [' + err + ']');
+    	fileLogger.log('something is wrong : [' + err + ']');
     });
 
     // pipe to response
@@ -97,6 +98,7 @@ module.exports.streamHelper = function() {
     var movie = req.params.file;
     var folder = _findFolder(movie);
     var filePath = path.join(global.appRoot, RESOURCE_PATH + folder + '/' + movie);
+    fileLogger.log('responseMovie : ' + filePath);
 
     // file 찾기
     _isFileExist(filePath).catch(function(e){
