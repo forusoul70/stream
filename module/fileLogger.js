@@ -16,13 +16,29 @@ var _getConsole = function() {
 }
 
 module.exports.fileLogger = function() {
+  /**
+  * 일반로그
+  */
   this.log = function(log, params) {
     if (params === undefined) {
       _getConsole().log(log);
+      console.log(log);
     } else {
       _getConsole().log(log, params);
+      console.log(log, params);
     }
+  }
 
-    console.log(log, params);
+  /**
+  * 에러로그
+  */
+  this.error = function(log, params) {
+    if (params === undefined) {
+      _getConsole().error(log);
+      console.error(log, params);
+    } else {
+      _getConsole().error(log, params);
+      console.error(log, params);
+    }
   }
 }

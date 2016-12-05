@@ -12,6 +12,9 @@ app.use('/resource/', express.static(__dirname + '/resource'));
 
 var server = app.listen(8080, function() {
   var port = server.address().port;
+  process.on('uncaughtException', function (err) {
+    fileLogger.error('uncaughtException : ' + err);    
+  });
   fileLogger.log('App now running on port ', port);
 });
 
@@ -23,7 +26,7 @@ app.get('/', (req, res) => {
 // streaming
 app.get('/movie/:movie', (req, res) => {
   var movie = req.params.movie;
-  fileLogger.log('Movie request ' + '[' + movie + ']');  
+  fileLogger.log('Movie request ' + '[' + movie + ']');
   res.redirect('/streaming/' + movie + '.m3u8');
 });
 
