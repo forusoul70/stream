@@ -19,13 +19,18 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views/grid.html'));
 });
 
-// streaming
-app.get('/movie/:movie', (req, res) => {
+// hls
+app.get('/hls/:movie', (req, res) => {
   var movie = req.params.movie;
   console.log(encodeURI(movie + 'index.m3u8'));
-  res.redirect('/streaming/' + movie + '.m3u8');
+  res.redirect('/hls/' + movie + '.m3u8');
 });
 
-app.get('/streaming/:file', (req, res) => {
+app.get('/hls/:file', (req, res) => {
   streamHelper.responseMovie(req, res);
+});
+
+// psuedo streaming
+app.get('/psuedo/:movie', (req, res) => {
+  streamHelper.responsePseudoMovie(req, res);
 });
