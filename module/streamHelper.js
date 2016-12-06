@@ -4,6 +4,7 @@ var events = require("events");
 const RESOURCE_PATH = 'resource/movie/';
 const MIME_MP4 = 'video/mp4'
 var handler = new events.EventEmitter();
+var fileLogger = new (require(global.modulePath + '/fileLogger.js')).fileLogger();
 
 // error handler define
 handler.on('badRequest', (res, error) => {

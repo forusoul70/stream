@@ -1,2 +1,4 @@
 node_modules
 resource/movie/*
+error.log
+out.log

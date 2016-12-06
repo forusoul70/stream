@@ -1,9 +1,11 @@
 var path = require('path');
 global.appRoot = path.resolve(__dirname);
+global.modulePath = global.appRoot + "/module"
 
 var express = require('express');
 var app = express();
 var streamHelper = new (require('./module/streamHelper.js')).streamHelper();
+var fileLogger = new (require('./module/fileLogger.js')).fileLogger();
 
 // initialize
 app.set('views', './views');
@@ -11,7 +13,10 @@ app.use('/resource/', express.static(__dirname + '/resource'));
 
 var server = app.listen(8080, function() {
   var port = server.address().port;
-  console.log('App now running on port ', port);
+  process.on('uncaughtException', function (err) {
+    fileLogger.error('uncaughtException : ' + err);
+  });
+  fileLogger.log('App now running on port ', port);
 });
 
 // Routes
@@ -22,15 +27,14 @@ app.get('/', (req, res) => {
 // hls
 app.get('/hls/:movie', (req, res) => {
   var movie = req.params.movie;
-  console.log(encodeURI(movie + 'index.m3u8'));
-  res.redirect('/hls/' + movie + '.m3u8');
+  res.redirect('/file/' + movie + '.m3u8');
 });
 
-app.get('/hls/:file', (req, res) => {
+app.get('/file/:file', (req, res) => {
   streamHelper.responseMovie(req, res);
 });
 
 // psuedo streaming
-app.get('/psuedo/:movie', (req, res) => {
+app.get('/pseudo/:movie', (req, res) => {
   streamHelper.responsePseudoMovie(req, res);
 });
