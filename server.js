@@ -11,7 +11,7 @@ var fileLogger = new (require('./module/fileLogger.js')).fileLogger();
 app.set('views', './views');
 app.use('/resource/', express.static(__dirname + '/resource'));
 
-var server = app.listen(8080, function() {
+var server = app.listen(80, function() {
   var port = server.address().port;
   process.on('uncaughtException', function (err) {
     fileLogger.error('uncaughtException : ' + err);
