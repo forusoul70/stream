@@ -10,6 +10,8 @@ var fileLogger = new (require('./module/fileLogger.js')).fileLogger();
 // initialize
 app.set('views', './views');
 app.use('/resource/', express.static(__dirname + '/resource'));
+app.use('/js/', express.static(__dirname + '/js'));
+app.use('/css/', express.static(__dirname + '/css'));
 
 var server = app.listen(80, function() {
   var port = server.address().port;
@@ -37,4 +39,8 @@ app.get('/file/:file', (req, res) => {
 // psuedo streaming
 app.get('/pseudo/:movie', (req, res) => {
   streamHelper.responsePseudoMovie(req, res);
+});
+
+app.get('/webTorrentDemo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views/webTorrentDemo.html'));
 });
