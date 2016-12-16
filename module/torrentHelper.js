@@ -1,5 +1,5 @@
-var path = require('path');
-var WebTorrent = require('webtorrent');
+const STATUS_DOWNLOADING = 'downloading';
+const STATUS_DONE = 'done';
 
 /**
 * 프로젝트 root path 찾기
@@ -16,6 +16,18 @@ var getDefualtMoviePath = function() {
   var rootPath = getRootPath();
   return rootPath + '/resource/movie';
 };
+
+/**
+* "./module" 폴더 리턴
+*/
+var getModulePath = function() {
+  var rootPath = getRootPath();
+  return rootPath + '/module';
+};
+
+var path = require('path');
+var WebTorrent = require('webtorrent');
+var dbHelper = new (require(getModulePath() + '/dbHelper.js')).dbHelper();
 
 /**
 *  Human readable bytes util
@@ -60,6 +72,14 @@ torrentHelper.prototype.requestDownload = function (torrentId, downloadPath) {
     // insert torrent to dictionary
     self.downloadMap[torrentId] = torrent;
 
+    // update torrent status to db
+    torrent.downloadStatus = STATUS_DOWNLOADING;
+    dbHelper.updateTorrent(torrentId, torrent).then(function(){
+      console.log('update db finished');
+    }).catch(function(err) {
+      console.log('Failed to update db! : ' +  err);
+    });
+
     // Handle Error
     torrent.on('error', function(err) {
       console.log('Error occurred : ', err);
@@ -67,6 +87,14 @@ torrentHelper.prototype.requestDownload = function (torrentId, downloadPath) {
 
     // Handle Download finish
     torrent.on('done', function(err) {
+      // update torrent status to db
+      torrent.downloadStatus = STATUS_DONE;
+      dbHelper.updateTorrent(torrentId, torrent).then(function(){
+        console.log('update db finished');
+      }).catch(function(err) {
+        console.log('Failed to update db : ' + err);
+      });
+
       console.log('Download fisished path : ' + torrent.path);
       torrent.files.forEach(function(file){
         console.log('%s[%d][%b]', file.name, file.length, file.downloaded);
