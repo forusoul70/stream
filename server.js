@@ -15,7 +15,7 @@ app.use('/resource/', express.static(__dirname + '/resource'));
 app.use('/js/', express.static(__dirname + '/js'));
 app.use('/css/', express.static(__dirname + '/css'));
 
-var server = app.listen(8080, function() {
+var server = app.listen(80, function() {
   var port = server.address().port;
   process.on('uncaughtException', function (err) {
     fileLogger.error('uncaughtException : ' + err);
